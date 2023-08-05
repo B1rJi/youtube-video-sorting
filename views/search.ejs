@@ -1,0 +1,55 @@
+<%- include ('./layout.ejs') %>
+
+    <div class="app">
+        <div class="search">
+            <div class="intro-header">
+                <h2>Welcome to the search page</h2>
+                <h4>Searched Data in paginated manner</h4>
+            </div>
+        </div>
+    
+
+    <table class="content-table">
+        <thead>
+            <th>Video Title</th>
+            <th>Video Description</th>
+            <!-- <th>Thumbnail Url</th> -->
+            <th>Published At</th>
+            <!-- <th>City</th> -->
+            <th>Url</th>
+        </thead>
+        
+        
+            
+        <tbody>
+            <% for (user of users) { %>
+                <% if (user) { %>
+                <tr>
+                    <td><%= user.videoTitle %></td>
+                    <td><%= user.videoDescription %></td>
+                    <!-- <td><%= user.url %></td> -->
+                    <td><%= user.publishedAt %></td>
+                    <!-- <td><%= user.city %></td> -->
+                    <td><%= user.url %></td>
+                </tr>
+                <% } else { %>
+                        <h3>Loading.....</h3>
+                <%}%>
+            <% } %>
+        </tbody>
+    </table>
+     <!--Display the links to the pages-->
+     <% if(page > 1) { %> <a href="/?page=<%=page-1%>">Before</a> <% } %>
+     <% for(let i = iterator; i <= endingLink; i++) { %>
+         <% if(i === page) { %>
+         <a class="selectedLink" href="/?page=<%=i%>"><%=i%></a>
+         <% continue; %>
+     <% } %>
+         <a href="/?page=<%=i%>"><%=i%></a>
+         <% } %>
+         <% if(page < numberOfPages) { %> <a href="/?page=<%=page+1%>">After</a> <% } %>
+    </div>
+                            
+                            
+                    
+                    
