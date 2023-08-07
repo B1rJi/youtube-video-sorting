@@ -40,54 +40,46 @@ router.get('/api', async(req,res) => {
     }
 })
 
-router.get('/search', async(req,res) => {
+router.get('/search/:videotitle', async(req,res) => {
     try {
-        const title = req.query.videoTitle
-        const description = req.query.videoDescription
-        if(!title) {
-            const data = await YoutubeDataModel.find({videoDescription: description}).lean()
-            if(data) {
-                res.send(data)
-            } else {
-                res.send(data)
-                //TODO: to modify this function
+        var data2 = [];
+        try{
+            const response = await youtube.search.list({
+                part: "snippet",
+                maxResults:5,
+                q: req.params.videotitle,
+                type:"video",
+                order:"date" ,
+                publishedAfter:"2021-01-01T00:00:00Z"
+            })
+            const title = response.data.items.map((item) => item.snippet.title);
+            const description = response.data.items.map((item) => item.snippet.description);
+            const pAt = response.data.items.map((item) => item.snippet.publishedAt);
+            const url = response.data.items.map((item) => item.snippet.thumbnails.default.url);
+            for(var i=0;i<5;i++) { 
+                const newYTData = new YoutubeDataModel()
+                newYTData.videoTitle = title[i];
+                newYTData.videoDescription = description[i];
+                newYTData.publishedAt = pAt[i];
+                newYTData.url = url[i];
+                //console.log(i)
+                await newYTData.save();
             }
-        }
-        if(!description) { 
-            const data = await YoutubeDataModel.find({videoTitle: title}).lean()
-            if(data) {
-                res.send(data)
-            } else {
-                try{
-    const response = await youtube.search.list({
-        part: "snippet",
-        maxResults:5,
-        q:title,
-        type:"video",
-        order:"date" ,
-        publishedAfter:"2021-01-01T00:00:00Z"
-    })
-    const title = response.data.items.map((item) => item.snippet.title);
-    const description = response.data.items.map((item) => item.snippet.description);
-    const pAt = response.data.items.map((item) => item.snippet.publishedAt);
-    const url = response.data.items.map((item) => item.snippet.thumbnails.default.url);
-    //console.log(url);
-                var data=[];
-    for(var i=0;i<5;i++) { 
-        const temp = {
-        videoTitle = title[i],
-        videoDescription = description[i],
-        publishedAt = pAt[i],
-        url = url[i],
-    }
-        //console.log(i)
-        data.push(temp);
-    }
-    res.render("dashboard", { title: "Dashboard", users: data , page: 1, iterator: 5, endingLink: 5, numberOfPages: 1})
-
+            
+            for(var i=0;i<5;i++) { 
+                const temp = {
+                videoTitle : title[i],
+                videoDescription : description[i],
+                publishedAt : pAt[i],
+                url : url[i],
+                }
+                //console.log(i)
+                data2.push(temp)
             }
+        } catch(err) {
+                console.log(err)
         }
-
+        res.render("dashboard", { title: "Dashboard", users: data2 , home: false })
     }catch(err) {
         console.log(err)
     }
@@ -123,7 +115,7 @@ router.get('/', async(req,res) => {
             .limit(limit)
             .skip((page-1)*limit);
         //res.send(data).redirect("index")
-        res.render("dashboard", { title: "Dashboard", users: data , page: page, iterator: iterator, endingLink: endingLink, numberOfPages: numberOfPages})
+        res.render("dashboard", { title: "Dashboard", users: data , home: true, page: page, iterator: iterator, endingLink: endingLink, numberOfPages: numberOfPages})
 //a
     }catch (err) {
         console.log(err)
