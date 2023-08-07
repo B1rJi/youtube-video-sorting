@@ -111,7 +111,7 @@ router.get('/', async(req,res) => {
         //     iterator -= (page + 4) - numberOfPages;
         // }
         //console.log(endingLink,iterator,numberOfPages,page)
-        const data = await YoutubeDataModel.find().sort({"publishedAt": -1})
+        const data = await YoutubeDataModel.find().sort({"_id": -1})
             .limit(limit)
             .skip((page-1)*limit);
         //res.send(data).redirect("index")
