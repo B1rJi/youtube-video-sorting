@@ -26,7 +26,7 @@ const task = async() => {
     const response = await youtube.search.list({
         part: "snippet",
         maxResults:5,
-        q:"free fire",
+        q:"data structure and algorithm",
         type:"video",
         order:"date" ,
         publishedAfter:"2021-01-01T00:00:00Z"
