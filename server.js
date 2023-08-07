@@ -63,7 +63,7 @@ const connect = mongoose.connect(
 )
 app.listen(PORT, (err)=> {
     connect;
-    task();
+    //task();
     if(err) console.log(err);
     else console.log("Running at port", PORT)
 })
