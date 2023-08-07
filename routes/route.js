@@ -1,7 +1,15 @@
+const { google } = require('googleapis');
+
 const router= require('express').Router();
 //const controller = require('../controllers/controller'); 
 const YoutubeDataModel = require('../models/YoutubeData');
 
+const API_KEY = process.env.API_KEY
+
+const youtube = google.youtube( {
+    version: "v3",
+    auth: API_KEY,
+})
 
 router.get('/api', async(req,res) => {
     try{
@@ -38,11 +46,46 @@ router.get('/search', async(req,res) => {
         const description = req.query.videoDescription
         if(!title) {
             const data = await YoutubeDataModel.find({videoDescription: description}).lean()
-            res.send(data)
+            if(data) {
+                res.send(data)
+            } else {
+                res.send(data)
+                //TODO: to modify this function
+            }
         }
         if(!description) { 
             const data = await YoutubeDataModel.find({videoTitle: title}).lean()
-            res.send(data)
+            if(data) {
+                res.send(data)
+            } else {
+                try{
+    const response = await youtube.search.list({
+        part: "snippet",
+        maxResults:5,
+        q:title,
+        type:"video",
+        order:"date" ,
+        publishedAfter:"2021-01-01T00:00:00Z"
+    })
+    const title = response.data.items.map((item) => item.snippet.title);
+    const description = response.data.items.map((item) => item.snippet.description);
+    const pAt = response.data.items.map((item) => item.snippet.publishedAt);
+    const url = response.data.items.map((item) => item.snippet.thumbnails.default.url);
+    //console.log(url);
+                var data=[];
+    for(var i=0;i<5;i++) { 
+        const temp = {
+        videoTitle = title[i],
+        videoDescription = description[i],
+        publishedAt = pAt[i],
+        url = url[i],
+    }
+        //console.log(i)
+        data.push(temp);
+    }
+    res.render("dashboard", { title: "Dashboard", users: data , page: 1, iterator: 5, endingLink: 5, numberOfPages: 1})
+
+            }
         }
 
     }catch(err) {
