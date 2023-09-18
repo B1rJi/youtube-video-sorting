@@ -30,7 +30,7 @@
                     <!-- <td><%= user.url %></td> -->
                     <td><%= user.publishedAt %></td>
                     <!-- <td><%= user.city %></td> -->
-                    <td><%= user.url %></td>
+                    <td onclick="playVideo(`<%= user.videoId %>`)"><%= user.url %></a></td>
                 </tr>
                 <% } else { %>
                         <h3>Loading.....</h3>
@@ -38,6 +38,9 @@
             <% } %>
         </tbody>
     </table>
+    <div class="videoShowDiv">
+        <iframe id="videoShow"></iframe>
+    </div>
      <!--Display the links to the pages-->
      <% if (home) { %>
         <% if(page > 1) { %> <a href="/?page=<%=page-1%>">Before</a> <% } %>
@@ -52,6 +55,14 @@
     <% } %>
     </div>
                             
-                            
+    <script>
+        const playVideo = (videoId) => {
+            //alert('Videos gonna play'+videoId)
+            let frame = document.getElementById("videoShow");
+            var src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1"
+            frame.setAttribute("src",src)
+            frame.setAttribute("allow","autoplay")
+        }
+    </script>         
                     
                     

@@ -9,6 +9,10 @@ const YtDataSchema = new Schema({
         type: String,
         default: "No description"
     },
+    videoId: {
+        type: String,
+        //required: true
+    },
     publishedAt: {
         type: Date,
         required: true

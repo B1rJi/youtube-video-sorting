@@ -56,12 +56,14 @@ router.get('/search/:videotitle', async(req,res) => {
             const description = response.data.items.map((item) => item.snippet.description);
             const pAt = response.data.items.map((item) => item.snippet.publishedAt);
             const url = response.data.items.map((item) => item.snippet.thumbnails.default.url);
+            const videoId = response.data.items.map((item) => item.id.videoId);
             for(var i=0;i<5;i++) { 
                 const newYTData = new YoutubeDataModel()
                 newYTData.videoTitle = title[i];
                 newYTData.videoDescription = description[i];
                 newYTData.publishedAt = pAt[i];
                 newYTData.url = url[i];
+                newYTData.videoId = videoId[i];
                 //console.log(i)
                 await newYTData.save();
             }
@@ -72,6 +74,7 @@ router.get('/search/:videotitle', async(req,res) => {
                 videoDescription : description[i],
                 publishedAt : pAt[i],
                 url : url[i],
+                videoId : videoId[i],
                 }
                 //console.log(i)
                 data2.push(temp)
