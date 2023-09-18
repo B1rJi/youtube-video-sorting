@@ -8,7 +8,14 @@
             </div>
         </div>
     
-
+        <% if (home) { %>
+            <div class="search">
+                <form action="/search">
+                    <input name="videoTitle" type="text" required>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        <% } %>
     <table class="content-table">
         <thead>
             <th>Video Title</th>
@@ -39,7 +46,7 @@
         </tbody>
     </table>
     <div class="videoShowDiv">
-        <iframe id="videoShow"></iframe>
+        <iframe id="videoShow" allowfullscreen></iframe>
     </div>
      <!--Display the links to the pages-->
      <% if (home) { %>

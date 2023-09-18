@@ -40,14 +40,14 @@ router.get('/api', async(req,res) => {
     }
 })
 
-router.get('/search/:videotitle', async(req,res) => {
+router.get('/search', async(req,res) => {
     try {
         var data2 = [];
         try{
             const response = await youtube.search.list({
                 part: "snippet",
                 maxResults:5,
-                q: req.params.videotitle,
+                q: req.query.videoTitle || "data structures and algorithms",
                 type:"video",
                 order:"date" ,
                 publishedAfter:"2021-01-01T00:00:00Z"
